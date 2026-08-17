@@ -1,75 +1,170 @@
-# Face Redactor / 顔ぼかし
+# Face Redactor
 
-画像内の顔をブラウザーだけで検出し、モザイク・ぼかし・塗りつぶし・目線・絵文字・任意画像で隠せる単一HTMLツールです。Browser-Kitty への組み込みを想定し、`htmlapps-template` のUI/リポジトリ構成に合わせています。
+[![Build standalone HTML](https://github.com/ttomohisa/htmlapps-face-redactor/actions/workflows/build-standalone.yml/badge.svg)](https://github.com/ttomohisa/htmlapps-face-redactor/actions/workflows/build-standalone.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Single HTML](https://img.shields.io/badge/distribution-single%20HTML-0ea5e9)](https://browser-kitty.com/)
 
-## 主な機能
+[日本語版 README](README.ja.md)
 
-- YuNet + ONNX Runtime Web による端末内の顔検出
-- 最小顔サイズを「小さい顔も / 標準 / 大きい顔だけ」からすぐ切り替え、12 / 24 / 48 px をワンタップ設定
-- スマホでは画像直下から最小顔サイズ・検出感度を変更して、その場で再検出
-- 検出漏れ用の手動マスク
-- マスクの移動・リサイズ・個別削除・有効/無効
-- モザイク / ぼかし / 塗りつぶし / 目線 / 絵文字 / 任意画像
-- スタンプ、テキストスタンプ、画像スタンプ
-- Undo / Redo
-- ズーム、パン、スマホのタッチ操作
-- JPEG / PNG / WebP 保存、品質・縮小率指定、保存サイズ概算
-- Web Share API 対応端末で共有
-- 画像のドラッグ＆ドロップ、ファイル選択、クリップボード貼り付け
-- 日本語 / English 切替
-- 処理結果をスマホでも確認しやすいトースト表示
-- スマホ向けのカードUI、コンパクトな固定ヘッダー、下部編集アクションバー
+A privacy-focused, single-HTML face redaction tool that detects faces locally in the browser and hides them with pixelation, blur, solid fill, eye bars, emoji, or custom images.
 
-> 顔検出は完全ではありません。保存前に画像全体を確認し、必要に応じて手動マスクを追加してください。
+Face detection and image processing run on your device. The selected photo is not uploaded by the app.
 
-## プライバシー
+## Features
 
-画像・動画はアプリのサーバーへアップロードしません。顔検出モデルと実行環境はHTML内に含まれ、`connect-src 'none'` のCSPで実行時ネットワーク通信を遮断しています。
+- Local face detection with **YuNet + ONNX Runtime Web**
+- Quick **smallest face** presets for small/distant faces: **12 / 24 / 48 px**
+- Adjustable detection confidence with easy presets and detailed settings
+- Automatic detection plus manual masks for missed faces or other private areas
+- Move, resize, enable/disable, and delete individual masks
+- Pixelation, blur, solid fill, eye bar, emoji, and custom-image redaction
+- Emoji, text, and image stamps
+- Undo and redo
+- Zoom, pan, mouse, touch, and mobile-friendly editing
+- Load images by file picker, drag and drop, or clipboard paste
+- Export as JPEG / PNG / WebP with quality and scale controls
+- Estimated output size before saving
+- Share through the Web Share API on supported devices
+- Japanese and English UI in the same HTML
+- Responsive mobile UI with a compact sticky header and bottom action bar
+- Runtime network access blocked by Content Security Policy
+- Self-extracting HTML output for a smaller portable file
 
-## 使い方
+> Face detection is not perfect. Always review the entire image before exporting and add manual masks when needed.
 
-1. `dist/index.html` をブラウザーで開きます。
-2. 画像を選択、ドロップ、または貼り付けます。
-3. 自動検出結果を確認し、漏れがあれば手動マスクを追加します。
-4. 隠し方と強さを調整します。
-5. 画像全体を確認して保存します。
+## Quick start
 
-## ビルド
+### Build the standalone files
 
-Windows / PowerShell:
+1. Download or clone this repository.
+2. On Windows, run `build-standalone.bat`.
+3. Open `dist/index.html` in a current browser.
+4. If you prefer the compressed portable version, open `dist/index.self-extract.html`.
 
-```powershell
-.\build-standalone.ps1
+Python, Node.js, and a local web server are not required. The build uses Windows PowerShell.
+
+### Generated files
+
+A normal build creates:
+
+```text
+dist/
+├─ index.html
+├─ index.self-extract.html
+├─ self-extract-manifest.json
+└─ .nojekyll
 ```
 
-または:
+Generated HTML files are intentionally not committed to this repository.
+
+## Usage
+
+1. Add an image with the file picker, drag and drop, or clipboard paste.
+2. Run face detection and review the detected masks.
+3. If small or distant faces are missed, lower **Smallest face** — try **12 px** first.
+4. Adjust detection confidence if you want to find more faces or reduce false positives.
+5. Add manual masks for anything the detector missed.
+6. Choose a redaction style and adjust its strength or appearance.
+7. Review the whole image and export it.
+
+### Smallest face
+
+The **Smallest face** setting controls how small a face can be before the detector ignores it.
+
+| Preset | Value | Best for |
+| --- | ---: | --- |
+| Small faces | 12 px | Group photos, crowds, distant faces |
+| Standard | 24 px | Most photos |
+| Large faces only | 48 px | Close-up portraits and faster detection |
+
+A smaller value can detect more distant faces, but it can also increase processing time and false positives.
+
+### Keyboard shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `D` | Detect faces again |
+| `M` | Add a manual mask |
+| `Delete` | Delete the selected mask |
+| `Space` | Play / pause video preview |
+
+## Development and build layout
+
+```text
+.
+├─ src/index.template.html          # Application source template
+├─ app.config.json                  # App metadata and build settings
+├─ dependencies.json                # External build dependencies (currently none)
+├─ build-standalone.bat             # Windows build entry point
+├─ build-standalone.ps1             # Standalone HTML builder
+├─ scripts/
+│  ├─ build-self-extract.ps1        # Self-extracting HTML builder
+│  ├─ verify-self-extract.ps1       # Self-extract verification
+│  └─ check-repository.ps1          # Repository/build validation
+├─ dist/                            # Generated output; not committed
+└─ .github/workflows/
+   └─ build-standalone.yml          # CI build validation
+```
+
+### Build
+
+Run:
 
 ```bat
 build-standalone.bat
 ```
 
-`src/index.template.html` を検証して `dist/index.html` を生成し、続けて `dist/index.self-extract.html` も生成します。依存ライブラリとYuNetモデルは既にHTMLへ内包されています。自己解凍版が不要な場合は `-SkipSelfExtract` を指定できます。
+or:
 
-`dist/` の生成HTMLはリポジトリには含めず、ビルド時に生成する運用です。
-
-## 構成
-
-```text
-src/index.template.html              編集元の単一HTML
-dist/index.html             配布用HTML
-dist/index.self-extract.html 自己解凍版HTML
-scripts/build-self-extract.ps1 自己解凍版の生成
-scripts/verify-self-extract.ps1 自己解凍版の検証
-app.config.json             アプリ情報
-dependencies.json           外部ビルド依存（現在なし）
-scripts/check-repository.ps1 検証
-.github/workflows/build-standalone.yml CI
+```powershell
+.\build-standalone.ps1
 ```
 
-## 動画について
+To build only `dist/index.html` and skip the self-extracting version:
 
-動画ファイルは読み込み・プレビューできますが、現在の版では加工済み動画の書き出しには対応していません。
+```powershell
+.\build-standalone.ps1 -SkipSelfExtract
+```
+
+The application source already contains ONNX Runtime Web and the YuNet model, so the normal build does not need to download JavaScript libraries or model files.
+
+## Privacy and runtime network protection
+
+The generated app is designed to process selected files locally in the browser.
+
+- The image or video you select is not uploaded by the app.
+- ONNX Runtime Web and the YuNet face-detection model are embedded in the HTML.
+- Content Security Policy includes `connect-src 'none'`, blocking runtime network connections.
+- `wasm-unsafe-eval` / `unsafe-eval` are allowed only so ONNX Runtime Web can compile and execute its embedded WebAssembly backend; they do not enable network access.
+- The self-extracting version restores the embedded app locally with the browser's `DecompressionStream` API.
+
+If the app is hosted on a website, the initial HTML still has to be downloaded from that site. After loading, the selected media remains on the device unless you explicitly use a browser sharing feature.
+
+## Limitations
+
+- Face detection can miss faces or produce false positives.
+- Very small, heavily occluded, blurred, rotated, or unusual-angle faces can be harder to detect.
+- Lowering the smallest-face size can increase processing time and false positives.
+- Video files can be loaded and previewed, but redacted video export is not available in the current version.
+- Large images can use substantial device memory and take longer on lower-powered devices.
+- Web Share API availability depends on the browser and operating system.
+- `index.self-extract.html` requires a browser with `DecompressionStream` support.
+
+## Dependencies
+
+| Library / model | Version | License | Purpose |
+| --- | ---: | --- | --- |
+| ONNX Runtime Web | 1.27.0 | MIT | Local neural-network inference in the browser |
+| YuNet face detection model | OpenCV Zoo | MIT | Face detection |
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for third-party license details.
+
+## Contributing
+
+Bug reports and feature proposals are welcome through GitHub Issues. When reporting a bug, include reproduction steps and browser/device information when possible.
 
 ## License
 
-MIT License. ONNX Runtime Web と YuNet のライセンスについては `THIRD_PARTY_NOTICES.md` を参照してください。
+Copyright © 2026 ttomohisa
+
+Licensed under the [MIT License](LICENSE).
