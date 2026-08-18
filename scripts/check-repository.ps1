@@ -30,7 +30,7 @@ if (-not $config.build.selfExtract.enabled) { throw "Self-extract build must be 
 if ([string]::IsNullOrWhiteSpace([string]$config.build.selfExtract.output)) { throw "Self-extract output path is missing." }
 
 $sourceHtml = [System.IO.File]::ReadAllText($Source, [System.Text.Encoding]::UTF8)
-foreach ($item in @('Face Redactor', 'connect-src ''none''', '''unsafe-eval''', '''wasm-unsafe-eval''', 'YuNet', 'id="helpToggle"', 'id="toast"', 'id="mobileDetectQuick"', 'id="mobileActionBar"', 'data-minface="12"', 'data-minface="24"', 'data-minface="48"', "addEventListener('paste'")) {
+foreach ($item in @('Face Redactor', 'connect-src ''none''', '''unsafe-eval''', '''wasm-unsafe-eval''', 'YuNet', 'ORT_WASM_GZIP', 'DecompressionStream', 'id="helpToggle"', 'id="toast"', 'id="mobileDetectQuick"', 'id="mobileActionBar"', 'data-minface="12"', 'data-minface="24"', 'data-minface="48"', "addEventListener('paste'")) {
   if (-not $sourceHtml.Contains($item)) { throw "Required source content missing: $item" }
 }
 if ($sourceHtml -match '<script[^>]+src=["'']https?://') { throw "External script source detected in $Source" }
@@ -46,7 +46,7 @@ if ($SkipSelfExtract) {
 
 if (-not (Test-Path $Dist)) { throw "Build output missing: $Dist" }
 $distHtml = [System.IO.File]::ReadAllText($Dist, [System.Text.Encoding]::UTF8)
-foreach ($item in @('Face Redactor', 'connect-src ''none''', '''unsafe-eval''', '''wasm-unsafe-eval''', 'YuNet', 'id="helpToggle"', 'id="toast"')) {
+foreach ($item in @('Face Redactor', 'connect-src ''none''', '''unsafe-eval''', '''wasm-unsafe-eval''', 'YuNet', 'ORT_WASM_GZIP', 'DecompressionStream', 'id="helpToggle"', 'id="toast"')) {
   if (-not $distHtml.Contains($item)) { throw "Required build content missing: $item" }
 }
 if ($distHtml -match '<script[^>]+src=["'']https?://') { throw "External script source detected in $Dist" }

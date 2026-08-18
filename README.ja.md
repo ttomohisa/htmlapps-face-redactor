@@ -126,7 +126,7 @@ PowerShellから直接実行する場合：
 .\build-standalone.ps1 -SkipSelfExtract
 ```
 
-ONNX Runtime Web と YuNet モデルは編集元HTMLへすでに内包されているため、通常のビルド時にJavaScriptライブラリやモデルをダウンロードする必要はありません。
+ONNX Runtime Web と YuNet モデルは編集元HTMLへすでに内包されているため、通常のビルド時にJavaScriptライブラリやモデルをダウンロードする必要はありません。ONNX Runtime のWASMはファイルサイズ削減のためgzip圧縮した状態で内包し、起動時にブラウザの `DecompressionStream` で端末内展開します。
 
 ## プライバシーと通信防止
 

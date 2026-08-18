@@ -126,7 +126,7 @@ To build only `dist/index.html` and skip the self-extracting version:
 .\build-standalone.ps1 -SkipSelfExtract
 ```
 
-The application source already contains ONNX Runtime Web and the YuNet model, so the normal build does not need to download JavaScript libraries or model files.
+The application source already contains ONNX Runtime Web and the YuNet model, so the normal build does not need to download JavaScript libraries or model files. To reduce the standalone file size, the ONNX Runtime WASM is embedded as gzip-compressed Base64 and unpacked locally at startup with the browser `DecompressionStream` API.
 
 ## Privacy and runtime network protection
 

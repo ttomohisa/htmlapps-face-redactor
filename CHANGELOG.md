@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Reduced the standalone HTML size by storing the embedded ONNX Runtime WASM as gzip-compressed Base64 and unpacking it locally at startup.
 - Removed the leftover build/debug banner from the top of the application UI.
 - Completed Japanese localization across controls, dialogs, status messages, tooltips, face lists, and mobile actions.
 - Reworked the smartphone layout using the htmlapps-template mobile visual language: light cards, compact sticky header, and a bottom editing action bar.

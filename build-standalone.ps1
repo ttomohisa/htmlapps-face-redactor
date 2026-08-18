@@ -43,7 +43,7 @@ $OutDir = Split-Path -Parent $OutputPath
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 $html = [System.IO.File]::ReadAllText($Source, [System.Text.Encoding]::UTF8)
-$required = @('Face Redactor', 'connect-src ''none''', '''unsafe-eval''', '''wasm-unsafe-eval''', 'YUNET', 'ONNX Runtime Web', 'id="canvas"', 'id="toast"')
+$required = @('Face Redactor', 'connect-src ''none''', '''unsafe-eval''', '''wasm-unsafe-eval''', 'YUNET', 'ORT_WASM_GZIP', 'DecompressionStream', 'ONNX Runtime Web', 'id="canvas"', 'id="toast"')
 foreach ($item in $required) {
   if (-not $html.Contains($item)) { throw "Required content missing: $item" }
 }
