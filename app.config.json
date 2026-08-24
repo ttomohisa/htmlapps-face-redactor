@@ -5,7 +5,7 @@
   "slug": "face-redactor",
   "version": "1.0",
   "description": "Detect and redact faces locally in the browser with automatic detection and manual masks.",
-  "descriptionJa": "顔を自動検出し、モザイク・ぼかし・塗りつぶしなどで匿名化する端末内処理ツールです。",
+  "descriptionJa": "顔を自動検出し、モザイク・ぼかし・塗りつぶしなどで匿名化する完全ローカル処理ツールです。",
   "defaultLanguage": "auto",
   "repository": {
     "owner": "ttomohisa",

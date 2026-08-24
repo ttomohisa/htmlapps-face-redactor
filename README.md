@@ -63,13 +63,13 @@ dist/
 ## Usage
 
 1. Add an image with the file picker, drag and drop, or clipboard paste.
-2. Run **Find faces** and review the detected masks.
-3. If small or distant faces are missed, lower **Smallest face** — try **12 px** first.
-4. Adjust detection confidence if you want more candidates or fewer false positives.
-5. Draw a manual mask over anything that still needs to be hidden.
-6. Choose a redaction style and adjust its strength, padding, shape, or overlay.
-7. Zoom in and inspect the whole image before exporting.
-8. Save as JPEG / PNG / WebP, or use the system share sheet when supported.
+2. Choose **Face size** and **Detection confidence**, then run **Find faces**. Start with Standard for both.
+3. For small or distant faces, try **Small faces (12 px)**. Use **More faces** when you want more candidates.
+4. Add a manual mask from the canvas editing panel for anything the detector missed.
+5. In the same panel, choose pixelation, blur, fill, or another effect and adjust the visible controls.
+6. Review both the **Faces & masks** list and the whole image.
+7. Press **Save image** and set the output filename, JPEG / PNG / WebP format, quality, and output size.
+8. Confirm **I reviewed the whole image** before saving. On supported devices, Share is available from More.
 
 ### Smallest face
 

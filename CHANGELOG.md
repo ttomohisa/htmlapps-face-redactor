@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- Rebalanced the desktop editing float into a fixed three-column layout.
+- Restyled the fully-local indicator as a badge and added a concise app description to the header.
+- Removed the duplicate language switch from Help and fixed the desktop More menu stacking order.
+
+- Fixed the canvas floating editor so controls wrap within the available canvas width instead of being clipped, and widened the mask-shape selector.
+- Rebuilt the top-left brand area to match the Browser Kitty app pattern with a 38 px app icon, app name, version badge, and compact local-processing subtitle.
+- Renamed the prominent privacy label from “端末内処理” to “完全ローカル処理”.
+- Fixed the Help & Notes dialog layout so its steps and notices remain vertically stacked on both desktop and mobile.
+- Rebuilt the desktop floating editor as a single horizontal toolbar and separated zoom controls to prevent overlap.
+- Matched the header language/help controls to the Browser-Kitty reference pattern with a direct language toggle and information icon.
+- Added extra mobile end-of-page clearance so the final mask-review card remains fully visible above the fixed action bar, and moved toasts above the bar.
+- Added an editable output filename to the save dialog with automatic extension updates when the export format changes.
+- Replaced clipped inline info bubbles with viewport-aware tooltips and moved mask padding into the always-available canvas quick controls.
+- Simplified the desktop header to Undo / Redo / Help / More / Save and moved mask, stamp, and effect controls into the canvas editing panel.
+- Reworked face detection into simple face-size and confidence presets, with numeric/NMS options under Advanced settings.
+- Reduced the mobile bottom action bar from six actions to four primary actions, moving Redo / Share / Clear into a compact More menu.
+- Focused the right pane on mask review and moved shortcut/privacy reference information into Help instead of the main workspace.
+- Consolidated export settings into the save dialog and added a required whole-image review checkbox before saving.
+- Added workflow highlighting for Add media → Find faces → Edit → Review & save and refreshed the repository screenshot.
 - Reduced the standalone HTML size by storing the embedded ONNX Runtime WASM as gzip-compressed Base64 and unpacking it locally at startup.
 - Removed the leftover build/debug banner from the top of the application UI.
 - Completed Japanese localization across controls, dialogs, status messages, tooltips, face lists, and mobile actions.
