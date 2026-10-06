@@ -85,7 +85,7 @@ A smaller value can find more distant faces, but may also increase processing ti
 
 ### Manual masks
 
-Use **Add Mask** whenever automatic detection misses a face or when you want to hide something other than a face. Drag on the image to create a mask, then move or resize it directly on the canvas. Individual masks can also be enabled, disabled, or removed from the mask list.
+Use **Add Mask** whenever automatic detection misses a face or when you want to hide something other than a face. Drag on the image to create a mask, then move or resize it directly on the canvas. Individual masks can also be enabled, disabled, or removed from the mask list. **Enable all masks** restores every disabled non-stamp mask in one action. The review pane shows enabled and disabled counts. Individual checkbox changes and Enable all masks can be undone and redone; stamps are not changed. Counts describe mask state, not whether every face or identifying detail is covered. Always review the whole image.
 
 ### Keyboard shortcuts
 
@@ -180,3 +180,12 @@ Bug reports and feature proposals are welcome through GitHub Issues. When report
 Copyright © 2026 ttomohisa
 
 Licensed under the [MIT License](LICENSE).
+
+
+## Mask review regression tests
+
+Run `node --test tests/mask-review.test.cjs` with Node.js 20 or later. These tests execute the actual application handlers with minimal DOM/canvas adapters and do not initialize the embedded detector.
+
+For real synthetic preview and decoded-PNG checks, install `@napi-rs/canvas` in a separate test-tools directory and set `FACE_REDACTOR_CANVAS` to its resolved module path before running the same command. Without that optional test-only module, the PNG test is explicitly skipped. Set `FACE_REDACTOR_HTML` to test `face-redactor.html`, `dist/index.html`, or `dist/index.self-extract.html`; the test unpacks the latter. No runtime dependency is added to the app.
+
+This suite does not validate browser layout, touch routing, model accuracy, or redaction completeness. JPEG/WebP encoding and browser download/share behavior require separate browser QA.
