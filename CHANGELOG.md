@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added Enable all masks and enabled/disabled counts in the bilingual mask review pane. Stamps are excluded; counts do not certify complete coverage.
+- Made individual checkbox and bulk enabled-state edits undoable in one step, while preserving Redo for no-ops.
+- Clear previous-source history and pending gestures when accepting replacement media, and discard stale detector results/errors after replacement or session clear.
+- Release a canceled pointer edit without leaving mask-state actions blocked.
+
 - Rebalanced the desktop editing float into a fixed three-column layout.
 - Restyled the fully-local indicator as a badge and added a concise app description to the header.
 - Removed the duplicate language switch from Help and fixed the desktop More menu stacking order.
@@ -40,3 +45,4 @@
 - Rebuilt the UI around the light `htmlapps-template` style.
 - Added Japanese/English switching, help/notes, mobile toast feedback and clipboard image paste.
 - Added an explicit pre-save missed-face review reminder.
+
