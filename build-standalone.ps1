@@ -54,7 +54,7 @@ if ($html -match '<script[^>]+src=["'']https?://') { throw "External script sour
 
 $size = [Math]::Round((Get-Item $OutputPath).Length / 1MB, 2)
 $hash = Get-Sha256Hex $OutputPath
-Write-Host "Built Face Redactor 1.0" -ForegroundColor Green
+Write-Host "Built Face Redactor $($appConfig.version)" -ForegroundColor Green
 Write-Host "Output: $OutputPath"
 Write-Host "Size: $size MB"
 Write-Host "SHA-256: $hash"

@@ -59,4 +59,7 @@ if (-not $SkipSelfExtract) {
   }
 }
 
+
+& node (Join-Path $Root "tests\header-normalization.test.mjs")
+if ($LASTEXITCODE -ne 0) { throw "Header normalization regression failed." }
 Write-Host "Repository verification passed." -ForegroundColor Green

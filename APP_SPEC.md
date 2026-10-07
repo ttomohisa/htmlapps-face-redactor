@@ -1,7 +1,7 @@
 # App specification
 
 - **Name:** Face Redactor / 顔ぼかし
-- **Version:** 1.0
+- **Version:** 1.0.1
 - **Primary artifact:** `dist/index.html`
 - **Runtime model:** fully client-side; no application-server upload
 - **Network policy:** `connect-src 'none'`
@@ -21,3 +21,8 @@
 - Destructive clear action requires confirmation.
 - Save requires an explicit whole-image review acknowledgement before export.
 - Status feedback is visible as a toast on small screens.
+
+## Header normalization (1.0.1)
+
+- The language button shows EN in Japanese and JA in English. Its title and accessible name describe the destination in the current UI language.
+- Help retains its localized title and accessible name; the header version is v1.0.1.
