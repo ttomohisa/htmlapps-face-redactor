@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 - 2026-10-07
+
+- Normalize the header language switch to EN / JA with localized destination tooltips and accessible names.
+- Keep Help labels localized and synchronize the three-part app version without changing local-processing behavior.
+
 ## Unreleased
 
 - Added Enable all masks and enabled/disabled counts in the bilingual mask review pane. Stamps are excluded; counts do not certify complete coverage.
