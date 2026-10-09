@@ -14,7 +14,7 @@ A privacy-focused, single-HTML app for detecting and hiding faces in images dire
 
 GitHub Pages delivers the initial HTML. After it loads, face detection, masking, editing, and image export run locally in the browser. Images you select are not uploaded by the app.
 
-[![Face Redactor screenshot](assets/screenshot.png)](https://ttomohisa.github.io/htmlapps-face-redactor/face-redactor.html)
+[![Face Redactor screenshot](assets/screenshot-en.png)](https://ttomohisa.github.io/htmlapps-face-redactor/face-redactor.html)
 
 ## Features
 
@@ -102,7 +102,7 @@ Use **Add Mask** whenever automatic detection misses a face or when you want to 
 .
 ├─ face-redactor.html               # Checked-in standalone app
 ├─ src/index.template.html          # Application source template
-├─ assets/screenshot.png            # README screenshot
+├─ assets/screenshot-en.png            # README screenshot
 ├─ app.config.json                  # App metadata and build settings
 ├─ dependencies.json                # External build dependencies (currently none)
 ├─ build-standalone.bat             # Windows build entry point

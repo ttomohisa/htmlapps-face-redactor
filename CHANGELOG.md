@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - 2026-10-09
+
+- Add a genuine English screenshot for the app catalog and documentation.
+
 ## 1.0.1 - 2026-10-07
 
 - Normalize the header language switch to EN / JA with localized destination tooltips and accessible names.
