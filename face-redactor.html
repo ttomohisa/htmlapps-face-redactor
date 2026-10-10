@@ -360,7 +360,7 @@ function openAuditModal(id,opener,initialId){
   for(const [root] of locks)root.classList.add('modal-open');
   node.classList.remove('hidden');$(initialId).focus();
 }
-for(const id of ['helpModal','clearConfirm'])$(id).addEventListener('pointerdown',e=>{if(e.target===$(id))closeAuditModal(id)});
+for(const id of ['helpModal','clearConfirm'])$(id).addEventListener('pointerdown',e=>{if(e.target===$(id)){e.preventDefault();closeAuditModal(id)}});
 document.addEventListener('keydown',e=>{
   const owned=auditModal;if(!owned)return;
   if(document.querySelector('dialog:modal')||[...document.querySelectorAll('.confirm-modal:not(.hidden)')].some(node=>node!==owned.node))return;

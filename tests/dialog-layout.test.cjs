@@ -18,7 +18,7 @@ function harness(){
  vm.runInContext(helper+slice("$('helpToggle').onclick=","document.addEventListener('paste'"),c);
  vm.runInContext(slice("$('clear').onclick=","$('clearAccept').onclick="),c);
  const key=(key,shiftKey=false)=>{const e={key,shiftKey,prevented:false,stopped:false,preventDefault(){this.prevented=true},stopPropagation(){this.stopped=true},stopImmediatePropagation(){this.stopped=true}};for(const f of events.keydown||[]){f(e);if(e.stopped)break}return e};
- const pointer=(id,target=id)=>{for(const f of nodes[id].listeners.pointerdown||[])f({target:nodes[target]})};
+ const pointer=(id,target=id)=>{const event={target:nodes[target],defaultPrevented:false,preventDefault(){this.defaultPrevented=true}};for(const f of nodes[id].listeners.pointerdown||[])f(event);if(!event.defaultPrevented){if(target===id)doc.activeElement=body;else nodes[target].focus()}return event};
  const run=x=>vm.runInContext(x,c);
  return{nodes,doc,key,pointer,run,openHelp(){nodes.helpToggle.focus();nodes.helpToggle.click()},openClear(mobile=false){nodes.mobileMore.hidden=!mobile;nodes.menuToggle.hidden=mobile;menu.classList.remove('hidden');nodes.clear.focus();nodes.clear.click();menu.classList.add('hidden')}};
 }
