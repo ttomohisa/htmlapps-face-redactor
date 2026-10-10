@@ -150,7 +150,7 @@ test('save acknowledgement resets on cancel/reopen and output controls remain av
   for (const format of ['image/jpeg', 'image/png', 'image/webp']) assert(html.includes(`value="${format}"`));
 });
 test('embedded assets and privacy invariants are unchanged', () => {
-  const assets = html.split('\n').find(line => line.startsWith('const ORT_JS=')); assert(assets);
+  const assets = html.split(/\r?\n/).find(line => line.startsWith('const ORT_JS=')); assert(assets);
   assert.equal(createHash('sha256').update(assets).digest('hex'), '2aac611036be35a81b359a07dd61fd5588e8ae6caf6d4ced779b76d1c6990e5d');
   assert(html.includes("connect-src 'none'")); assert(html.includes('Detection can miss faces.')); assert(html.includes('I reviewed the whole image'));
   assert.match(html, /<button[^>]+id="enableAllMasks"[^>]+type="button"/);
