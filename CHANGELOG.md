@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 - 2026-10-10
+
+- Keep Help and Clear above the header and mobile action bar, with background interaction/scroll isolation and keyboard focus confinement.
+- Restore visible opener focus after Cancel, Close, Escape and backdrop dismissal while preserving prior inert/scroll state and newer modal ownership.
+- Keep the narrow title/version visible; preserve the existing Help scroll shell, Save workflow and local detector assets.
+
 ## 1.0.2 - 2026-10-09
 
 - Add a genuine English screenshot for the app catalog and documentation.

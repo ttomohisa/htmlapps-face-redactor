@@ -62,4 +62,17 @@ if (-not $SkipSelfExtract) {
 
 & node (Join-Path $Root "tests\header-normalization.test.mjs")
 if ($LASTEXITCODE -ne 0) { throw "Header normalization regression failed." }
+# Exercise the actual overlay and mask handlers in every built representation.
+$previousFaceHtml = $env:FACE_REDACTOR_HTML
+try {
+  $testTargets = @($Source, $Dist)
+  if (-not $SkipSelfExtract) { $testTargets += $SelfExtractDist }
+  foreach ($testTarget in $testTargets) {
+    $env:FACE_REDACTOR_HTML = $testTarget
+    & node --test (Join-Path $Root "tests\dialog-layout.test.cjs") (Join-Path $Root "tests\mask-review.test.cjs")
+    if ($LASTEXITCODE -ne 0) { throw "Dialog/mask regression failed for $testTarget" }
+  }
+} finally {
+  $env:FACE_REDACTOR_HTML = $previousFaceHtml
+}
 Write-Host "Repository verification passed." -ForegroundColor Green

@@ -1,7 +1,7 @@
 # App specification
 
 - **Name:** Face Redactor / 顔ぼかし
-- **Version:** 1.0.2
+- **Version:** 1.0.3
 - **Primary artifact:** `dist/index.html`
 - **Runtime model:** fully client-side; no application-server upload
 - **Network policy:** `connect-src 'none'`
@@ -25,4 +25,8 @@
 ## Header normalization (1.0.1)
 
 - The language button shows EN in Japanese and JA in English. Its title and accessible name describe the destination in the current UI language.
-- Help retains its localized title and accessible name; the header version is v1.0.1.
+- Help retains its localized title and accessible name; the header version matches the app configuration.
+
+## Responsive Help and Clear overlays
+
+Help and Clear session sit above the header and mobile actions, isolate the background with its prior inert and scroll-lock states restored afterward, confine Tab/Shift+Tab, and dismiss on Escape or a direct backdrop press. Help returns to its trigger; Clear returns to the current visible More trigger when its closed-menu item cannot receive focus. Newer modal ownership suppresses stale focus return. The narrow header keeps the version visible. Save retains its separate whole-image review workflow.

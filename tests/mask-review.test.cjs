@@ -68,6 +68,8 @@ function harness(initial = []) {
   let objectId = 0;
   const s = { canvas, ctx, source, sourceType: 'image', video: node(), faces: copy(initial), selected: -1, detectionRan: false, history: [], future: [], actionStart: null, drag: null, moveDrag: null, panDrag: null, pinch: null, touchPoints: new Map(), busy: false, manualMode: false, stampMode: false, sourceBaseName: 'synthetic', overlayImage: null, overlayUrl: null, currentUrl: 'source:initial', loop: 0, videoFrame: 0, appLanguage: 'en', session: null,
     $: get, document, tr: (ja, en) => s.appLanguage === 'ja' ? ja : en,
+    // Overlay behavior is executed separately in dialog-layout.test.cjs; this adapter keeps the mask-engine harness scoped.
+    openAuditModal(id) { get(id).classList.remove('hidden'); }, closeAuditModal(id) { get(id).classList.add('hidden'); },
     drawBoxes() {}, pointerPos: e => ({ x: e.clientX, y: e.clientY }), stage: { querySelectorAll: () => [] },
     setTimeout() {}, cancelAnimationFrame() {}, msg() {}, syncDetectionQuick() {}, syncMobileActions() {}, updateQuickEffect() {}, resetZoom() {}, renderActionLabels() {}, applyLanguage() { s.updateReviewSummary(); }, setCanvas(w, h) { canvas.width = w; canvas.height = h; }, navigator: {},
     Image: function () { images.push(this); },
