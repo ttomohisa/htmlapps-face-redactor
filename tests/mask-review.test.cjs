@@ -42,8 +42,8 @@ function fakeCanvas(w = 1, h = 1) {
   const ctx = { drawImage() {}, fillRect() {}, clearRect() {}, save() {}, restore() {}, fillText() {}, getImageData() { return { data: new Uint8ClampedArray(640 * 640 * 4) }; } };
   return Object.assign(node(), { width: w, height: h, getContext: () => ctx, toDataURL: () => 'data:image/png;base64,', toBlob: fn => fn(new Blob(['test'])) });
 }
-function harness(initial = []) {
-  const createCanvas = nativeCanvas?.createCanvas || fakeCanvas;
+function harness(initial = [], canvasFactory = nativeCanvas?.createCanvas || fakeCanvas) {
+  const createCanvas = canvasFactory;
   const canvas = createCanvas(100, 80), source = createCanvas(100, 80), ctx = canvas.getContext('2d');
   const canvasEvents = {};
   canvas.style = {}; canvas.addEventListener = (name, fn) => { (canvasEvents[name] ||= []).push(fn); };
@@ -68,6 +68,8 @@ function harness(initial = []) {
   let objectId = 0;
   const s = { canvas, ctx, source, sourceType: 'image', video: node(), faces: copy(initial), selected: -1, detectionRan: false, history: [], future: [], actionStart: null, drag: null, moveDrag: null, panDrag: null, pinch: null, touchPoints: new Map(), busy: false, manualMode: false, stampMode: false, sourceBaseName: 'synthetic', overlayImage: null, overlayUrl: null, currentUrl: 'source:initial', loop: 0, videoFrame: 0, appLanguage: 'en', session: null,
     $: get, document, tr: (ja, en) => s.appLanguage === 'ja' ? ja : en,
+    // Overlay behavior is executed separately in dialog-layout.test.cjs; this adapter keeps the mask-engine harness scoped.
+    openAuditModal(id) { get(id).classList.remove('hidden'); }, closeAuditModal(id) { get(id).classList.add('hidden'); },
     drawBoxes() {}, pointerPos: e => ({ x: e.clientX, y: e.clientY }), stage: { querySelectorAll: () => [] },
     setTimeout() {}, cancelAnimationFrame() {}, msg() {}, syncDetectionQuick() {}, syncMobileActions() {}, updateQuickEffect() {}, resetZoom() {}, renderActionLabels() {}, applyLanguage() { s.updateReviewSummary(); }, setCanvas(w, h) { canvas.width = w; canvas.height = h; }, navigator: {},
     Image: function () { images.push(this); },
@@ -148,7 +150,7 @@ test('save acknowledgement resets on cancel/reopen and output controls remain av
   for (const format of ['image/jpeg', 'image/png', 'image/webp']) assert(html.includes(`value="${format}"`));
 });
 test('embedded assets and privacy invariants are unchanged', () => {
-  const assets = html.split('\n').find(line => line.startsWith('const ORT_JS=')); assert(assets);
+  const assets = html.split(/\r?\n/).find(line => line.startsWith('const ORT_JS=')); assert(assets);
   assert.equal(createHash('sha256').update(assets).digest('hex'), '2aac611036be35a81b359a07dd61fd5588e8ae6caf6d4ced779b76d1c6990e5d');
   assert(html.includes("connect-src 'none'")); assert(html.includes('Detection can miss faces.')); assert(html.includes('I reviewed the whole image'));
   assert.match(html, /<button[^>]+id="enableAllMasks"[^>]+type="button"/);
@@ -219,4 +221,56 @@ test('canceling an overlay move during detection does not discard the detector t
   // Existing overlay-box pointerdown selects/moves without beginning a new action.
   h.s.moveDrag = { kind: 'move', index: 0, dx: 1, dy: 1 }; h.canvas.onpointercancel();
   assert.equal(h.s.actionStart, detectorStart); d.resolve(); await d.pending; assert.equal(h.s.history.length, 1); assert.equal(h.s.faces.length, 2); h.nodes.undo.click(); assert.equal(h.s.faces.length, 1);
+});
+
+// Bounded source-over RGBA adapter, not a browser rasterizer or PNG encoder.
+// The production drawBase/render/estimate/save handlers above execute unchanged.
+function rgbaCanvas(width = 1, height = 1) {
+  let pixels = new Uint8ClampedArray(width * height * 4), state = [];
+  const canvas = Object.assign(node(), { toDataURL: () => 'data:image/png;base64,', toBlob(fn) { fn(new Blob([pixels], { type: 'application/x-test-rgba' })); } });
+  for (const name of ['width', 'height']) Object.defineProperty(canvas, name, { get: () => name === 'width' ? width : height, set(v) { if (name === 'width') width = v; else height = v; pixels = new Uint8ClampedArray(width * height * 4); } });
+  function each(x, y, w, h, fn) { for (let yy = Math.max(0, y); yy < Math.min(height, y + h); yy++) for (let xx = Math.max(0, x); xx < Math.min(width, x + w); xx++) fn((yy * width + xx) * 4, xx, yy); }
+  function over(i, src) {
+    const sa = src[3] / 255, da = pixels[i + 3] / 255, a = sa + da * (1 - sa);
+    for (let c = 0; c < 3; c++) pixels[i + c] = a ? (src[c] * sa + pixels[i + c] * da * (1 - sa)) / a : 0;
+    pixels[i + 3] = a * 255;
+  }
+  const ctx = {
+    fillStyle: '#000000', save() { state.push(this.fillStyle); }, restore() { this.fillStyle = state.pop(); },
+    clearRect(x, y, w, h) { each(x, y, w, h, i => pixels.fill(0, i, i + 4)); },
+    fillRect(x, y, w, h) { const rgb = this.fillStyle.match(/^#([a-f0-9]{6})([a-f0-9]{2})?$/i); assert(rgb, 'RGBA fixture only uses hex colors'); const n = parseInt(rgb[1], 16), colour = [n >> 16, n >> 8 & 255, n & 255, rgb[2] ? parseInt(rgb[2], 16) : 255]; each(x, y, w, h, i => over(i, colour)); },
+    getImageData(x, y, w, h) { const data = new Uint8ClampedArray(w * h * 4); each(x, y, w, h, (i, xx, yy) => data.set(pixels.slice(i, i + 4), ((yy - y) * w + xx - x) * 4)); return { data }; },
+    drawImage(source, ...args) {
+      let sx = 0, sy = 0, sw = source.width, sh = source.height, dx, dy, dw = sw, dh = sh;
+      if (args.length === 8) [sx, sy, sw, sh, dx, dy, dw, dh] = args; else [dx, dy, dw = sw, dh = sh] = args;
+      const original = source.getContext('2d').getImageData(0, 0, source.width, source.height).data;
+      each(dx, dy, dw, dh, (i, x, y) => { const ix = Math.floor(sx + (x - dx) * sw / dw), iy = Math.floor(sy + (y - dy) * sh / dh), at = (iy * source.width + ix) * 4; over(i, original.slice(at, at + 4)); });
+    }
+  };
+  canvas.getContext = () => ctx; return canvas;
+}
+function alphaFixture() {
+  const h = harness([rect], rgbaCanvas), ctx = h.source.getContext('2d'); ctx.clearRect(0, 0, 100, 80);
+  for (const [i, alpha] of ['ff', '80', '40', '00'].entries()) { ctx.fillStyle = '#0000ff' + alpha; ctx.fillRect(i * 25, 0, 25, 80); }
+  h.canvas.getContext('2d').clearRect(0, 0, 100, 80); return h;
+}
+const alphaSamples = image => [5, 30, 55, 80].map(x => [...image.getContext('2d').getImageData(x, 60, 1, 1).data]);
+const originalAlphaBands = [[0,0,255,255], [0,0,255,128], [0,0,255,64], [0,0,0,0]];
+test('source-over adapter exposes accumulation and clear resets its destination', () => {
+  const a = rgbaCanvas(1, 1), b = rgbaCanvas(1, 1); a.getContext('2d').fillStyle = '#0000ff80'; a.getContext('2d').fillRect(0, 0, 1, 1);
+  const c = b.getContext('2d'); c.drawImage(a, 0, 0); assert.equal(c.getImageData(0,0,1,1).data[3], 128); c.drawImage(a, 0, 0); assert.equal(c.getImageData(0,0,1,1).data[3], 192); c.clearRect(0, 0, 1, 1); c.drawImage(a, 0, 0); assert.equal(c.getImageData(0,0,1,1).data[3], 128);
+});
+test('actual repeated render preserves unmasked alpha and removes disabled mask paint', () => {
+  const h = alphaFixture();
+  for (let i = 0; i < 5; i++) { h.run('render()'); assert.deepEqual(alphaSamples(h.canvas), originalAlphaBands, 'Unmasked source pixels survive every draw'); assert.deepEqual([...h.s.ctx.getImageData(30,25,1,1).data], [0,0,0,255], 'Opaque fill mask remains opaque'); }
+  h.s.faces[0].enabled = false; h.run('render()'); assert.deepEqual([...h.s.ctx.getImageData(30,25,1,1).data], [0,0,255,128], 'Removing the mask restores the source transparency');
+});
+test('actual repeated estimates and accepted save keep original unmasked RGBA before encoding', async () => {
+  const h = alphaFixture(); h.nodes.export.click();
+  for (let i = 0; i < 3; i++) h.run('updateSaveDetails()');
+  h.nodes.reviewCheck.checked = true; h.nodes.reviewCheck.listeners.change(); h.nodes.saveAccept.click();
+  assert.deepEqual(alphaSamples(h.canvas), originalAlphaBands); assert.equal(h.downloads.length, 1); assert.equal(h.blobs[0].type, 'application/x-test-rgba');
+  const exported = new Uint8ClampedArray(await h.blobs[0].arrayBuffer());
+  assert.deepEqual([5,30,55,80].map(x => [...exported.slice((60*100+x)*4,(60*100+x)*4+4)]), originalAlphaBands);
+  assert.deepEqual([...exported.slice((25*100+30)*4,(25*100+30)*4+4)], [0,0,0,255]);
 });
