@@ -4,7 +4,10 @@
 
 - Keep Help and Clear above the header and mobile action bar, with background interaction/scroll isolation and keyboard focus confinement.
 - Restore visible opener focus after Cancel, Close, Escape and backdrop dismissal while preserving prior inert/scroll state and newer modal ownership.
-- Keep the narrow title/version visible; preserve the existing Help scroll shell, Save workflow and local detector assets.
+- Keep the narrow title/version visible; preserve the existing Help scroll shell and local detector assets.
+- Bound Save to the viewport with a scrolling review/settings body and reachable title/actions; share modal focus, Escape/Cancel/backdrop dismissal and scroll isolation while retaining the explicit review gate and output options.
+- Restore export focus after Save and remove deferred filename selection that could override newer focus.
+- Clear the render canvas before drawing the source, preserving unmasked alpha through repeated previews, estimates and saves.
 
 ## 1.0.2 - 2026-10-09
 
