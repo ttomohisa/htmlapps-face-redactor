@@ -34,3 +34,7 @@ Help and Clear session sit above the header and mobile actions, isolate the back
 Save shares the same focus, background-isolation and dismissal lifecycle, returning to the visible export trigger or a visible fallback. Its title and actions stay outside a viewport-bounded scrolling body so review and output settings remain reachable at high zoom. The explicit whole-image acknowledgement and filename, format, quality and scale controls are preserved.
 
 Each render starts from a cleared canvas before the source and masks are redrawn. Repeated previews, size estimates and exports preserve unmasked source transparency without accumulating old mask paint.
+
+## Shared local-processing wording
+
+The Japanese label 完全ローカル処理 uses the English text Fully local processing. Preserve the existing responsive visibility, functional bottom controls, and Help behavior. Detailed privacy/network explanations are unchanged.
